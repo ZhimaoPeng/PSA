@@ -1,0 +1,49 @@
+name: cifar10_benchmark
+
+dataset:
+  # Training datasets
+  labeled: cifar10 # choices: [cifar10, cifar100]
+  unlabeled: tin # choices: [tin, none]
+
+  # choices: [cifar10, texture, svhn, cifar100, tin, lsun, places365]
+  test_ood: [tin]
+
+  labeled_batch_size: 64
+  unlabeled_batch_size: 128
+  test_batch_size: 200
+
+trainer_args:
+  lambda_oe: 0.5 
+  lambda_rep: 0.3
+  num_clusters: 1024
+  t: 0.1
+  id_quantile: 0.8
+  ood_quantile: 0.2
+  exp_id: 0
+  use_id_type: use_id # choices: [discard_id, use_id, use_discard_id]
+  use_oe_type: oe # choices: [oe, balanced_oe]
+  beta: 0.99
+  use_fixed_threshold: False
+  pseudo_generation_type: per_epoch # [per_epoch, per_iter]
+  output_score_type: sort # [max_softmax, max_logits, energy_score, sort]
+  id_threshold: 0.8
+  ood_threshold: 0.2
+  loss_fun_type: full # [full, CE, wo_sample_ass, wo_oe, wo_rep]
+
+lamda: 10.0
+
+
+optim_args:
+  epochs: 200
+  learning_rate: 0.1
+  min_lr: 0.000001
+  momentum: 0.9
+  weight_decay: 0.0005
+  warm_up_epoch: 0
+
+postprocess: none # choices: [msp, odin, ene]
+postprocess_args:
+  # temperature: 100 # ene, odin
+  # noise: 0.0014 # odin
+
+contra_loss_type: all_scl # choices: [all_scl, all_scl_cl, all_cl, id_cl, none]
