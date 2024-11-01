@@ -15,7 +15,7 @@ pip install -r requirements.txt
 
 # SC-OOD Dataset
 
-The SC-OOD dataset introduced in the paper can be downloaded here.
+The SC-OOD dataset introduced in the paper can be downloaded here: [![gdrive](https://img.shields.io/badge/SCOOD%20dataset-google%20drive-f39f37)](https://drive.google.com/file/d/1cbLXZ39xnJjxXnDM7g2KODHIjE0Qj4gu/view?usp=sharing)1cbLXZ39xnJjxXnDM7g2KODHIjE0Qj4gu/view
 
 Our codebase accesses the dataset from the root directory in a folder named `data/` by default, i.e.
 
