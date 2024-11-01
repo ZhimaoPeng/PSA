@@ -11,10 +11,11 @@ dataset:
   labeled_batch_size: 64
   unlabeled_batch_size: 128
   test_batch_size: 200
+  seed: 44
 
 trainer_args:
   lambda_oe: 0.5 
-  lambda_rep: 0.1
+  lambda_rep: 1
   num_clusters: 1024
   t: 0.1
   id_quantile: 0.9

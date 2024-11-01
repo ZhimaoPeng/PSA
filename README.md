@@ -53,6 +53,10 @@ bash cifar10_retraining.sh
 
 The evaluation results are saved in a `.csv` file as specified.  
 
+# Model Checkpoints 
+
+You can find model checkpoints [here](https://drive.google.com/drive/folders/1de-rTPwFgQYD9Wu29g4-GuAjnye1WYwt?usp=drive_link)
+
 # Acknowledgements 
 
 The code base is largely built on this repo:https://github.com/jingkang50/ICCV21_SCOOD?tab=readme-ov-file

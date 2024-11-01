@@ -25,12 +25,9 @@ from utils_sampler import source_import, get_value
 
 
 
-
-# 主函数
 def main(args, config):
 
-    
-    seed = args.seed
+    seed = config["dataset"]["seed"]
     random.seed(seed)
     os.environ['PYTHONHASHSEED'] = str(seed)
     np.random.seed(seed)
@@ -109,15 +106,15 @@ def main(args, config):
         num_workers=args.prefetch
     )
 
-    # 如果进行重平衡微调
+    
     if args.use_balanced_fine_tuning:
-        # 获取采样器的类型
+        
         sampler_defs = config['sampler']
-        # 如果采样器存在
+        
         if sampler_defs:
-            # 如果采样器为类别感知采样器
+            
             if sampler_defs['type'] == 'ClassAwareSampler':
-                # 获取采样器字典
+                
                 sampler_dic = {
                     'sampler': source_import(sampler_defs['def_file']).get_sampler(),
                     'params': {'num_samples_cls': sampler_defs['num_samples_cls']}
@@ -132,30 +129,29 @@ def main(args, config):
         else:
             sampler_dic = None
          
-        # 如果全部样本进行重新训练
+        
         if args.all_retraining:
-            # 则不使用采样器
+            
             sampler_dic = None
          
 
     if config['dataset']['unlabeled'] == "none":
         unlabeled_aug_loader = None
     else:
-        # 如果进行平衡重采样
+        
         if args.use_balanced_fine_tuning:
-            # 获取OOD样本遮罩
+            
             ood_mask = np.load(args.ood_mask_dir)
-            # 获取ID样本遮罩
+            
             id_mask = np.load(args.id_mask_dir)
-            # 获取筛选出ID样本的伪标签
+            
             id_pseudo_label = np.load(args.id_pseudo_label_dir)
-            # 如果不使用采样器
+            
             if sampler_dic is None:
-                # 进行随机采样
                 shuffle = True
             else:
                 shuffle = False 
-            # 获取无标注样本加载器
+            
             unlabeled_aug_loader = get_dataloader_ext(
                 name=config["dataset"]["unlabeled"],
                 stage="train",
@@ -242,7 +238,7 @@ def main(args, config):
     use_threshold_training = args.use_threshold_training
     use_balanced_fine_tuning = args.use_balanced_fine_tuning
 
-    # 获取训练器
+    
     set_seed(seed)
     trainer = get_ETtrainer(net,
         labeled_train_loader,
@@ -267,12 +263,12 @@ def main(args, config):
 
     begin_epoch = time.time()
     best_accuracy = 0.0
-    # 遍历所有的周期
+    
     for epoch in range(0, config["optim_args"]["epochs"]):
-        # 进行一个周期的训练
+        
         train_metrics = trainer.train_epoch(epoch, output_dir)
 
-        # 进行评估
+        
         classification_metrics = evaluator.eval_classification(test_id_loader)
         postprocess_args = config["postprocess_args"] if config["postprocess_args"] else {}
         postprocessor = get_postprocessor(config["postprocess"], **postprocess_args)
@@ -310,133 +306,133 @@ def main(args, config):
         )
     print('Training Completed!')
 
-# 当模块直接运行时，以下代码将被运行
+
 if __name__ == "__main__":
-    # set_random_seed(3406)
-    # 对命令行参数进行解析
+    
+    
     parser = argparse.ArgumentParser()
-    # 获取配置文件
+    
     parser.add_argument(
         "--config",
         help="path to config file",
         default="configs/train/cifar10_ET.yml",
     )
-    # 如果从预训练模型加载，指定断点的路径
+    
     parser.add_argument(
         "--checkpoint",
         help="specify path to checkpoint if loading from pre-trained model",
         # default="3.1/pretrain.ckpt",
     )
-    # 获取数据集的路径
+    
     parser.add_argument(
         "--data_dir",
         help="directory to dataset",
         default="data",
     )
-    # 获取输出的路径
+    
     parser.add_argument(
         "--output_dir",
         help="directory to save experiment artifacts",
         default="output/cifar10",
     )
-    # 保存所有的模型
+    
     parser.add_argument(
         "--save_all_model",
         action="store_true",
         help="whether to save all model checkpoints",
     )
 
-    # 获取id阈值的路径
+    
     parser.add_argument(
         "--id_threshold_dir",
         help="directory to save experiment artifacts",
         default="output/cifar10",
     )
 
-    # 获取OOD阈值的路径
+    
     parser.add_argument(
         "--ood_threshold_dir",
         help="directory to save experiment artifacts",
         default="output/cifar10",
     )
 
-    # 是否使用阈值进行训练
+    
     parser.add_argument(
         "--use_threshold_training",
         action="store_true",
         help="whether to save all model checkpoints",
     )
 
-    # 是否使用数据平衡的微调
+    
     parser.add_argument(
         "--use_balanced_fine_tuning",
         action="store_true",
         help="whether to save all model checkpoints",
     )
 
-    # 是否只使用全连接层进行微调
+    
     parser.add_argument(
         "--use_fc_fine_tuning",
         action="store_true",
         help="whether to save all model checkpoints",
     )
 
-    # 是否使用骨干网络进行微调
+    
     parser.add_argument(
         "--use_backbone_fine_tuning",
         action="store_true",
         help="whether to save all model checkpoints",
     )
 
-    # 获取OOD样本的遮罩
+    
     parser.add_argument(
         "--ood_mask_dir",
         help="directory to save experiment artifacts",
         default="new_exp_results/use_energy_threshold_training_warmup_30_id_0.95_ood_0.3_exp_0/cifar100/final_ood_mask.npy",
     )
 
-    # 获取ID样本的遮罩
+    
     parser.add_argument(
         "--id_mask_dir",
         help="directory to save experiment artifacts",
         default="new_exp_results/use_energy_threshold_training_warmup_30_id_0.95_ood_0.3_exp_0/cifar100/final_id_mask.npy",
     )
 
-    # 获取ID样本的伪标签
+    
     parser.add_argument(
         "--id_pseudo_label_dir",
         help="directory to save experiment artifacts",
         default="new_exp_results/use_energy_threshold_training_warmup_30_id_0.95_ood_0.3_exp_0/cifar100/id_pseudo_label.npy",
     )
 
-    # 是否进行重新训练
+    
     parser.add_argument(
         "--all_retraining",
         action="store_true",
         help="whether to save all model checkpoints",
     )
 
-    # 是否重新初始化模型参数
+    
     parser.add_argument(
         "--random_init_paras",
         action="store_true",
         help="whether to save all model checkpoints",
     )
 
-    # 设置GPU的数量
+    
     parser.add_argument("--seed", type=int, help="number of seed to use")
 
-    # 设置GPU的数量
+    
     parser.add_argument("--ngpu", type=int, default=1, help="number of GPUs to use")
     parser.add_argument("--prefetch", type=int, default=16, help="pre-fetching threads.")
     
-    # 解析命令行参数
+    
     args = parser.parse_args()
 
-    # 加载taml文件
+    
     config = load_yaml(args.config)
 
     
 
-    # 主函数
+    
     main(args, config)

@@ -11,6 +11,7 @@ dataset:
   labeled_batch_size: 64
   unlabeled_batch_size: 128
   test_batch_size: 200
+  seed: 120
 
 trainer_args:
   lambda_oe: 0.5 

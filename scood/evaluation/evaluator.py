@@ -92,7 +92,7 @@ class Evaluator:
         if postprocessor is None:
             postprocessor = BasePostprocessor()
         
-        logging.basicConfig(filename=str(output_dir)+'/log.txt', level=logging.INFO)
+        # logging.basicConfig(filename=str(output_dir)+'/log.txt', level=logging.INFO)
 
         if method == "sel":
             results_matrix = []

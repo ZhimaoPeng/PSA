@@ -1,11 +1,9 @@
 #!/bin/bash
-export CUDA_VISIBLE_DEVICES=0
+export CUDA_VISIBLE_DEVICES=2
 OUTPUT_DIR1=$1
 DATA_DIR=$2
-seed=109
 
 python train.py \
-    --seed $seed \
     --config configs/train/cifar100_balanced_ft.yml \
     --data_dir /defaultShare/archive/pengzhimao/code/ET-OOD-NEW/data \
     --output_dir new_exp_results/cifar100_use_energy_threshold_retraining/cifar100 \
@@ -21,6 +19,6 @@ python test.py \
     --config configs/test/cifar100.yml \
     --checkpoint new_exp_results/cifar100_use_energy_threshold_retraining/cifar100/best.ckpt \
     --data_dir /defaultShare/archive/pengzhimao/code/ET-OOD-NEW/data \
-    --csv_path new_exp_results/cifar100_use_energy_threshold_retraining/results_msp.csv
+    --csv_path new_exp_results/cifar100_use_energy_threshold_retraining/cifar100/results_msp.csv
 
 

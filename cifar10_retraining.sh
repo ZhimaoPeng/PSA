@@ -3,10 +3,7 @@ OUTPUT_DIR1=$1
 DATA_DIR=$2
 
 
-
-seed=287
 python train.py \
-    --seed $seed \
     --config configs/train/cifar10_balanced_ft.yml \
     --data_dir /defaultShare/archive/pengzhimao/code/ET-OOD-NEW/data \
     --output_dir new_exp_results/cifar10_use_energy_threshold_retraining/cifar10 \
